@@ -579,7 +579,6 @@ user_agent_parsers:
   - regex: '(Kurio)\/(\d+)\.(\d+)\.(\d+)'
     family_replacement: 'Kurio App'
 
-
 os_parsers:
   ##########
   # HbbTV vendors
@@ -4890,3 +4889,78 @@ device_parsers:
     device_replacement: 'Generic Feature Phone'
     brand_replacement: 'Generic'
     model_replacement: 'Feature Phone'
+
+engine_parsers:
+
+  - regex: '(Trident|Presto)[ /](\d+)\.(\d+)\.?(\d+)?'
+
+  - regex: 'Opera'
+    family_replacement: 'Presto'
+
+  # Windows 10 IE version uses "Edge" and "Chrome"
+  - regex: '\b(Edge)/(\d+)\.(\d+)'
+    family_replacement: 'EdgeHTML'
+
+  - regex: 'QtWebEngine/(\d+)\.(\d+)(?:\.(\d+))?'
+    family_replacement: 'Blink-QtWebEngine'
+
+  - regex: '(Chrome)[/](\d+)\.(\d+)\.?(\d+)?\.?(\d+)?.*OPR/\d+'
+    family_replacement: 'Blink-Opera'
+
+  - regex: 'SamsungBrowser[/].*(Chrome)[/](\d+)\.(\d+)\.?(\d+)?\.?(\d+)??'
+    family_replacement: 'Blink-Samsung'
+
+  - regex: 'Silk[/].*(Chrome)[/](\d+)\.(\d+)\.?(\d+)?\.?(\d+)??'
+    family_replacement: 'Blink-Silk'
+
+  # https://developer.chrome.com/multidevice/user-agent
+  - regex: '(?:; wv\) )?AppleWeb[Kk]it/.*Version/.*(Chrome)[/](\d+)\.(\d+)\.?(\d+)?\.?(\d+)?'
+    family_replacement: 'Blink-WebView'
+
+  - regex: '(Chrome)[/](\d+)\.(\d+)\.?(\d+)?\.?(\d+)?'
+    family_replacement: 'Blink'
+
+  - regex: '(TDEHTML)/(\d+)\.(\d+)\.?(\d+)?'
+    family_replacement: 'TDEHTML'
+
+  - regex: '(KHTML|Konqueror)/(\d+)\.(\d+)\.?(\d+)?'
+    family_replacement: 'KHTML'
+
+  # http://docs.aws.amazon.com/silk/latest/developerguide/user-agent.html
+  - regex: '(Silk)/(\d+)\.(\d+).*AppleWebKit'
+    family_replacement: 'Webkit-Silk'
+
+  - regex: 'Web[Kk]it.*(NokiaBrowser|BrowserNG)/(\d+)\.?(\d+)?\.?(\d+)?'
+    family_replacement: 'Webkit-Nokia'
+
+  - regex: '^Mozilla.*Android\b.*SAMSUNG.*(AppleWeb[Kk]it)/?(\d+)\.?(\d+)?'
+    family_replacement: 'Webkit-Samsung'
+
+  - regex: 'Android\b.*(AppleWeb[Kk]it)/?(\d+)\.?(\d+)?'
+    family_replacement: 'Webkit-Android'
+
+  - regex: 'DirectFB\b.*(AppleWeb[Kk]it)/?(\d+)\.?(\d+)?'
+    family_replacement: 'Webkit-LG'
+  - regex: '(AppleWeb[Kk]it)/?(\d+)\.?(\d+)?.*\b(NetCast|LG)'
+    family_replacement: 'Webkit-LG'
+
+  - regex: 'Smart-?TV\b.*(AppleWeb[Kk]it)/?(\d+)\.?(\d+)?'
+    family_replacement: 'Webkit-Samsung'
+
+  - regex: '(Goanna)/.*PaleMoon/(\d+)\.(\d+)\.([\da-z]+)'
+
+  - regex: '(rv:)(\d+)\.(\d+[ab]?)\.?([ab]?\d+[a-z]*)?\.?(\d+[a-z]*)?[;\)].* Gecko(?:[ /]|$)'
+    family_replacement: 'Gecko'
+
+  - regex: '(Gecko)/20\d{6}'
+
+  - regex: '(AppleWeb[Kk]it)(?:/(\d+)\.?(\d+)?\.?(\d+)?|[ ,]|$)'
+    family_replacement: 'Webkit-Apple'
+
+  - regex: '(Web[Kk]it)(?:/(\d+)\.?(\d+)?\.?(\d+)?|[ ,]|$)'
+    family_replacement: 'Webkit'
+
+  - regex: '(Net[Ff]ront)[ /]?(\d+)\.(\d+)'
+    family_replacement: 'Netfront'
+
+  - regex: '(UCBrowser)/(\d+)\.(\d+)(?:\.(\d+))?'

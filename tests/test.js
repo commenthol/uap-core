@@ -63,6 +63,22 @@ function msg(name, actual, expected) {
   });
 });
 
+['../tests/test_engine.yaml'].forEach(function(fileName) {
+  var fixtures = readYAML(fileName).test_cases;
+  suite(fileName, function() {
+    fixtures.forEach(function(f) {
+      test(f.user_agent_string, function() {
+        var engine = refImpl.parse(f.user_agent_string).engine;
+        fixFixture(f, ['major', 'minor', 'patch']);
+        assert.strictEqual(engine.family, f.family, msg('engine.family', engine.family, f.family));
+        assert.strictEqual(engine.major, f.major, msg('engine.major', engine.major, f.major));
+        assert.strictEqual(engine.minor, f.minor, msg('engine.minor', engine.minor, f.minor));
+        assert.strictEqual(engine.patch, f.patch, msg('engine.patch', engine.patch, f.patch));
+      });
+    });
+  });
+});
+
 function fixFixture(f, props) {
   // A bug in the YAML parser makes empty fixture props
   // return a vanila object.

@@ -1,6 +1,6 @@
 # ua-parser Specification
 
-Version 0.2 Draft
+Version 1.0
 
 This document describes the specification on how a parser must implement the `regexes.yaml` file for correctly parsing user-agent strings on basis of that file.
 
@@ -21,6 +21,7 @@ This information is provided within the `regexes.yaml` file. Each kind of inform
 * `user_agent_parser`
 * `os_parsers`
 * `device_parsers`
+* `engine_parsers`
 
 Each parser contains a list of regular-expressions which are named `regex`. For each `regex` replacements specific to the parser can be named to attribute or change information. A replacement may require a match from the regular-expression which is extracted by an expression enclosed in normal brackets `"()"`. Each match can be addressed with `$1` to `$9` and used in a parser specific replacement.
 
@@ -29,7 +30,7 @@ Each parser contains a list of regular-expressions which are named `regex`. For 
 ## `user_agent_parsers`
 
 The `user_agent_parsers` returns information of the `family` type of the User-Agent.
-If available the version infomation specifying the `family` may be extracted as well if available.
+If available the version information specifying the `family` may be extracted as well if available.
 Here major, minor and patch version information can be addressed or overwritten.
 
 | match in regex | default replacement | placeholder in replacement | note    |
@@ -175,6 +176,56 @@ resolves to:
   model: 'PEDI PLUS W'
 ```
 
+## `engine_parsers`
+
+The `engine_parsers` returns information of the rendering-engine type of the User-Agent.
+If available the version information specifying the rendering-engine may be extracted as well if available.
+Here major, minor and patch version information can be addressed or overwritten.
+
+| match in regex | default replacement | placeholder in replacement | note    |
+| ---- | ------------------- | ---- | --------------------------------------- |
+| 1    | family_replacement  | $1   | specifies the User-Agents family        |
+| 2    | v1_replacement      | $2   | major version number/info of the family |
+| 3    | v2_replacement      | $3   | minor version number/info of the family |
+| 4    | v3_replacement      | $4   | patch version number/info of the family |
+
+In case that no replacement is specified, the association is given by order of the match. If in the `regex` no first match (within normal brackets) is given, the `family_replacement` shall be specified!
+To overwrite the respective value the replacement value needs to be named for a `regex`-item.
+
+**Parser Implementation:**
+
+The list of regular-expressions `regex` shall be evaluated for a given user-agent string beginning with the first `regex`-item in the list to the last item. The first matching `regex` stops processing the list. Regex-matching shall be case sensitive.
+
+In case that no replacement for a match is specified for a `regex`-item, the first match defines the `family`, the second `major`, the third `minor`and the forth `patch` information.
+If a `*_replacement` string is specified it shall overwrite or replace the match.
+
+As placeholder for inserting matched characters use within
+* `family_replacement`: `$1`
+* `v1_replacement`: `$2`
+* `v2_replacement`: `$3`
+* `v3_replacement`: `$4`
+
+If no matching `regex` is found the value for `family` shall be “Other”. The version information `major`, `minor` and `patch` shall not be defined.
+
+**Example:**
+
+For the User-Agent: `Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10547`
+the matching `regex`:
+
+```
+- regex: '\b(Edge)/(\d+)\.(\d+)'
+  family_replacement: 'EdgeHTML'
+```
+
+resolves to:
+
+```
+  family: 'EdgeHTML'
+  major: '13'
+  minor: '10547'
+  patch:
+```
+
 # Parser Output
 
 To allow interoperability with code that builds upon ua-parser, it is recommended to provide the parser output in a standardized way. The structure defined in [WebIDL](http://www.w3.org/TR/WebIDL/) may follow:
@@ -199,6 +250,12 @@ interface ua-parser-output {
     attribute string family;
     attribute string brand;
     attribute string model;
+  };
+  object engine: {              // The "engine_parsers" result
+    attribute string family;
+    attribute string major;
+    attribute string minor;
+    attribute string patch;
   };
 };
 ```
